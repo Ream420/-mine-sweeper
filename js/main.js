@@ -27,7 +27,6 @@ renderBoard(gBoard);
 //Board Rendering
 
 
-
 function renderBoard(board) {
     var strHTML = '';
     for (var i = 0; i < board.length; i++) {
@@ -48,7 +47,6 @@ function renderBoard(board) {
     elTable.innerHTML = strHTML;
 }
 
-
 function setMinesNegsCount(board, cellPos) {
     var counter = 0;
     for (var i = cellPos.i - 1; i <= cellPos.i + 1; i++) {
@@ -66,6 +64,9 @@ function setMinesNegsCount(board, cellPos) {
 function cellClicked(elCell, posi, posj, numOfMines) {
     var currCell = gBoard[posi][posj];
 
+    // checkStat(currCell,elCell,posi,posj,numOfMines);
+    var lose = checkStat(currCell);
+    if (lose) return;
     if (!currCell.isMark) {
 
         //Model Update
@@ -80,6 +81,33 @@ function cellClicked(elCell, posi, posj, numOfMines) {
         showCellsAround(posi, posj);
 
     }
+
+}
+
+//TODO
+function checkStat(currCell, elCell, posi, posj, numOfMines) {
+    if (currCell.isMine) {
+        for (var i = 0; i < gBoard.length; i++) {
+            for (var j = 0; j < gBoard[0].length; j++) {
+                var cell = gBoard[i][j];
+                if (i === posi && j === posj) continue;
+                if (cell.isMine) {
+                    //Model update
+                    cell.isShown = true;
+                    //Dom update.            
+                    var elCell = document.getElementById('' + i + j);
+                    elCell.style.backgroundColor = 'rgb(90, 132, 146)';
+                    elCell.innerText = '💣';
+                }
+            }
+        }
+        return false;
+    }
+
+}
+
+//TODO
+function levelSelect() {
 }
 
 function showCellsAround(posi, posj) {
@@ -89,9 +117,9 @@ function showCellsAround(posi, posj) {
             if (j < 0 || j > gBoard[0].length - 1) continue;
             if (i === posi && j === posj) continue;
             var cell = gBoard[i][j];
-             if (cell.isMine || cell.isShown) continue;
+            if (cell.isMine || cell.isShown) continue;
             //Model update.
-             cell.isShown = true;
+            cell.isShown = true;
             //Dom update.            
             var elCell = document.getElementById('' + i + j);
             elCell.style.backgroundColor = 'rgb(90, 132, 146)';
@@ -100,7 +128,7 @@ function showCellsAround(posi, posj) {
     }
 }
 
-
+//Mouse right click.
 function rightClick(elCell, i, j, numOfMines) {
     var currCell = gBoard[i][j];
     if (!currCell.isMark && !currCell.isShown) {
@@ -126,6 +154,7 @@ function rightClick(elCell, i, j, numOfMines) {
 }
 
 
+//TODO (conver to minuts)
 //Time functions
 function timeCount() {
     timeRender(`${gMsec} Seconds`);

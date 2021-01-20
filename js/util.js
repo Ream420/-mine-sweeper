@@ -12,7 +12,7 @@ function createMat(rows, cols) {
             var newCell = createCell();
             mat[i][j] = newCell;
             if (i === 1 && j === 1 ||
-                i === 2 && j === 2) {
+                i === 3 && j === 3) {
                 mat[i][j].isMine = true;
             }
         }
