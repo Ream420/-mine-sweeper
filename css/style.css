@@ -1,0 +1,29 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    background-color: red;
+}
+
+table {
+    width: 500px;
+    height: 400px;
+    background-color: lightblue
+}
+.time{
+    width: 100px;
+    height: 50px;
+    background-color: black;
+    color: white;
+    /* text-align: center; */
+    
+    
+}
+
+
+.cell {
+    text-align: center;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
