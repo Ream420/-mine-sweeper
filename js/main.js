@@ -97,9 +97,10 @@ function cellClicked(elCell, posi, posj, numOfMines) {
         if ((currCell.minesAroundCount === 0) && !currCell.isMine) {
             showCellsAround(posi, posj);
         }
-        if (!checkMine(currCell, elCell, posi, posj)) return;
+        if (checkMine(currCell, elCell, posi, posj)) return;
+        console.log('win Cheack');
         if (isVictory()) {
-            alert('Victory with left!');
+            alert('Victory with Cell!');
             //TODO: set victory image
         }
     }
