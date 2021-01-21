@@ -2,14 +2,14 @@
 var x = 'main';
 console.log(x);
 // Connection Cheack.
-var gCounter = 0
-var gMsec = 1;
+var gStartup = false;
+var gSec = 1;
+var timer;
 
 var gLevel = {
     size: 4,
-    mines: 2 // number of mines in the fame 
+    mines: 1 // number of mines in the fame 
 }
-
 
 // Game stat(keep updating)
 var gGame = {
@@ -20,7 +20,7 @@ var gGame = {
 }
 
 var gBoard = createMat(gLevel.size, gLevel.size);
-console.table(gBoard); //CHeack Board
+console.table(gBoard); //CHeack Board*
 console.log(gBoard); //CHeack Board
 
 renderBoard(gBoard);
@@ -62,38 +62,57 @@ function setMinesNegsCount(board, cellPos) {
 }
 
 function cellClicked(elCell, posi, posj, numOfMines) {
+    if (!gStartup) {
+        timer = setInterval(timeCount, 900);
+        gStartup = true;
+        gGame.isOn = true;
+    }
+    if (!gGame.isOn) return;
     var currCell = gBoard[posi][posj];
-
-    // checkStat(currCell,elCell,posi,posj,numOfMines);
-    var lose = checkStat(currCell);
-    if (lose) return;
-    if (!currCell.isMark) {
+    var stat = checkMine(currCell);
+    
+    // checkMine(currCell,elCell,posi,posj,numOfMines);
+    // if (!stat) 
+    if (!currCell.isMarked && !currCell.isShown) {
 
         //Model Update
         currCell.isShown = true;
+        gGame.shownCount++;
+
         //Dom update
         elCell.style.backgroundColor = 'rgb(90, 132, 146)';
         if (currCell.isMine === true) numOfMines = '💣';
         if (numOfMines === 0) numOfMines = '';
         elCell.innerText = numOfMines;
-        gCounter++;
-        if (gCounter === 1) var timer = setInterval(timeCount, 900);
-        showCellsAround(posi, posj);
 
+        if (!currCell.minesAroundCount > 0) {
+            showCellsAround(posi, posj);
+        }
+        if (isVictory()) {
+            console.log('victory');
+            //TODO: set victory image
+        }
     }
 
 }
 
 //TODO
-function checkStat(currCell, elCell, posi, posj, numOfMines) {
+function checkMine(currCell, elCell, posi, posj) {
+    if (!gGame.isOn) return;
+
     if (currCell.isMine) {
+        clearInterval(timer);
+        //TODO: set loose image
         for (var i = 0; i < gBoard.length; i++) {
             for (var j = 0; j < gBoard[0].length; j++) {
                 var cell = gBoard[i][j];
                 if (i === posi && j === posj) continue;
                 if (cell.isMine) {
+
                     //Model update
                     cell.isShown = true;
+                    gGame.shownCount++;
+
                     //Dom update.            
                     var elCell = document.getElementById('' + i + j);
                     elCell.style.backgroundColor = 'rgb(90, 132, 146)';
@@ -101,68 +120,121 @@ function checkStat(currCell, elCell, posi, posj, numOfMines) {
                 }
             }
         }
-        return false;
+        gGame.isOn = false;
+        gStartup=false;
     }
+}
 
+function showStatus() {
+    console.log('gGame.shownCount\t' + gGame.shownCount);
+    console.log('gGame.markedCount\t' + gGame.markedCount);
+    console.log('size squared\t' + (gLevel.size * gLevel.size));
+    console.log('gLevel.mines\t' + gLevel.mines);
+}
+
+function isVictory() {
+    if (!gGame.isOn) return;
+    var size = gLevel.size;
+    var cond1 = ((gGame.shownCount + gGame.markedCount) === (size * size));
+    var cond2 = (gGame.markedCount === gLevel.mines);
+    if(cond1 && cond2){
+        clearInterval(timer);
+        return true;
+    }
 }
 
 //TODO
+
 function levelSelect() {
 }
 
 function showCellsAround(posi, posj) {
+    if (!gGame.isOn) return;
+
     for (var i = posi - 1; i <= posi + 1; i++) {
         if (i < 0 || i > gBoard.length - 1) continue;
         for (var j = posj - 1; j <= posj + 1; j++) {
             if (j < 0 || j > gBoard[0].length - 1) continue;
             if (i === posi && j === posj) continue;
+
             var cell = gBoard[i][j];
             if (cell.isMine || cell.isShown) continue;
+
             //Model update.
             cell.isShown = true;
+            gGame.shownCount++;
+
             //Dom update.            
             var elCell = document.getElementById('' + i + j);
             elCell.style.backgroundColor = 'rgb(90, 132, 146)';
-            elCell.innerText = cell.minesAroundCount;
+            var numOfMines = cell.minesAroundCount;
+            if (numOfMines === 0) numOfMines = '';
+            elCell.innerText = numOfMines;
         }
     }
 }
 
 //Mouse right click.
 function rightClick(elCell, i, j, numOfMines) {
+    if (!gStartup) {
+        timer = setInterval(timeCount, 900);
+        gStartup = true;
+        gGame.isOn = true;
+    }
+    if (!gGame.isOn) return;
+
     var currCell = gBoard[i][j];
-    if (!currCell.isMark && !currCell.isShown) {
+    // var stat = cheackStatFlag();
+    if (!currCell.isMarked && !currCell.isShown) {
 
         //Model update.
-        currCell.isMark = true;
+        currCell.isMarked = true;
+        gGame.markedCount++;
 
         //Dom update.
         numOfMines = '🚩';
         elCell.innerText = numOfMines;
-        gCounter++;
-        if (gCounter === 1) var timer = setInterval(timeCount, 900);
+        if (!gStartup){
+            var timer = setInterval(timeCount, 900);
+            gStartup = true;    
+            gGame.isOn = true;
+        } 
     }
-    else if (currCell.isMark && !currCell.isShown) {
+    else if (currCell.isMarked && !currCell.isShown) {
 
         //Model update.
-        currCell.isMark = false;
+        currCell.isMarked = false;
+        gGame.markedCount--;
+        console.log(gGame.markedCount);
 
         //Dom update.
         numOfMines = '';
         elCell.innerText = numOfMines;
     }
+    if(isVictory()){ console.log('Victory with flag');}
 }
 
 
-//TODO (conver to minuts)
 //Time functions
 function timeCount() {
-    timeRender(`${gMsec} Seconds`);
-    gMsec += 1;
-}
-function timeRender(txt) {
-    var elTime = document.querySelector('.time');
-    elTime.innerText = txt;
+    if (!gGame.isOn) return;
+    timeRender(gGame.secsPassed);
+    gGame.secsPassed += 1;
 }
 
+function timeRender(seconds) {
+    var elTime = document.querySelector('.time');
+    elTime.innerText = 'Time\n' + secondsToTime(seconds);
+}
+
+function secondsToTime(sec) {
+    var seconds = pad(sec % 60);
+    var minutes = pad(Math.floor(sec / 60));
+    var hours = pad(Math.floor(sec / 3600));
+    return hours + ':' + minutes + ':' + seconds;
+}
+
+function pad(num) {
+    return (num < 10 ? '0' + num : '' + num);
+}
 

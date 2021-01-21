@@ -5,19 +5,29 @@ console.log(x);
 //gMat creation function.
 function createMat(rows, cols) {
     var mat = [];
-    // debugger;
+    var mineCount = 0;
+    var ranI;
+    var ranJ;
+
     for (var i = 0; i < rows; i++) {
         mat[i] = [];
         for (var j = 0; j < cols; j++) {
             var newCell = createCell();
             mat[i][j] = newCell;
-            if (i === 1 && j === 1 ||
-                i === 3 && j === 3) {
-                mat[i][j].isMine = true;
-            }
         }
     }
+
+    while (mineCount < gLevel.mines) {
+        ranI = randNum(rows);
+        ranJ = randNum(cols);
+        if (mat[ranI][ranJ].isMine) continue;
+        mat[ranI][ranJ].isMine = true;
+        mineCount++;
+    }
     return mat;
+}
+function randNum(lim) {
+    return Math.floor(Math.random() * lim);
 }
 
 //gCell creation function.
