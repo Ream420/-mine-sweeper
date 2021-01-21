@@ -69,10 +69,8 @@ function cellClicked(elCell, posi, posj, numOfMines) {
     }
     if (!gGame.isOn) return;
     var currCell = gBoard[posi][posj];
-    var stat = checkMine(currCell);
-    
-    // checkMine(currCell,elCell,posi,posj,numOfMines);
-    // if (!stat) 
+    checkMine(currCell,elCell, posi, posj);
+
     if (!currCell.isMarked && !currCell.isShown) {
 
         //Model Update
@@ -99,29 +97,31 @@ function cellClicked(elCell, posi, posj, numOfMines) {
 //TODO
 function checkMine(currCell, elCell, posi, posj) {
     if (!gGame.isOn) return;
-
     if (currCell.isMine) {
+        console.log(elCell);
         clearInterval(timer);
         //TODO: set loose image
+        elCell.style.backgroundColor = 'red';
+
         for (var i = 0; i < gBoard.length; i++) {
             for (var j = 0; j < gBoard[0].length; j++) {
                 var cell = gBoard[i][j];
                 if (i === posi && j === posj) continue;
                 if (cell.isMine) {
-
+                    
                     //Model update
                     cell.isShown = true;
                     gGame.shownCount++;
-
+                    
                     //Dom update.            
-                    var elCell = document.getElementById('' + i + j);
-                    elCell.style.backgroundColor = 'rgb(90, 132, 146)';
-                    elCell.innerText = '💣';
+                    var elCellCurr = document.getElementById('' + i + j);
+                    elCellCurr.style.backgroundColor = 'rgb(90, 132, 146)';
+                    elCellCurr.innerText = '💣';
                 }
             }
         }
         gGame.isOn = false;
-        gStartup=false;
+        gStartup = false;
     }
 }
 
@@ -137,7 +137,7 @@ function isVictory() {
     var size = gLevel.size;
     var cond1 = ((gGame.shownCount + gGame.markedCount) === (size * size));
     var cond2 = (gGame.markedCount === gLevel.mines);
-    if(cond1 && cond2){
+    if (cond1 && cond2) {
         clearInterval(timer);
         return true;
     }
@@ -194,11 +194,11 @@ function rightClick(elCell, i, j, numOfMines) {
         //Dom update.
         numOfMines = '🚩';
         elCell.innerText = numOfMines;
-        if (!gStartup){
+        if (!gStartup) {
             var timer = setInterval(timeCount, 900);
-            gStartup = true;    
+            gStartup = true;
             gGame.isOn = true;
-        } 
+        }
     }
     else if (currCell.isMarked && !currCell.isShown) {
 
@@ -211,7 +211,7 @@ function rightClick(elCell, i, j, numOfMines) {
         numOfMines = '';
         elCell.innerText = numOfMines;
     }
-    if(isVictory()){ console.log('Victory with flag');}
+    if (isVictory()) { console.log('Victory with flag'); }
 }
 
 

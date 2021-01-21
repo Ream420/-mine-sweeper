@@ -5,7 +5,8 @@ body {
     background-color: red;
 }
 
-table {
+table,th,td {
+    border: 1px solid black;
     width: 500px;
     height: 400px;
     background-color: lightblue
