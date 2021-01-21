@@ -2,26 +2,121 @@
     box-sizing: border-box;
 }
 body {
-    background-color: red;
+    background-color: rgba(158, 85, 43, 0.781);
+}
+h1{
+    color: gold;
+    widows: 100px;
+    height: 100px;
+    margin-left: 370px;
+    margin-bottom: -100px;
 }
 
 table,th,td {
+    margin-left: 350px;
+    margin-top: 100px;
     border: 1px solid black;
     width: 500px;
     height: 400px;
-    background-color: lightblue
+    background-color: lightblue;
 }
 .time{
+    position: absolute;
+    margin-top: 100px;
     width: 100px;
-    height: 40px;
+    height: 50px;
     background-color: black;
     color: white;
     text-align: center;
-    margin-bottom: 20px
-    
-    
+    margin-left: 100px;
+    padding: 10px;
+    border-radius: 30px;
+}
+.level {
+    position: absolute;
+    height: 40px;;
+    padding: 20px;
+    margin-top: 170px;
+    margin-left: 30px;
+    display: unset;
+}
+.text {    
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+    background-color: blue;
+    padding: 5px;
+    padding-top: 20px;
+    font-size: x-large;
+    font-weight:bold;
+
 }
 
+ul,li{
+    padding-top: 10px;
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    color: white;
+    text-align: center;
+    font-size:medium;
+    margin-top: 30px;
+    border-radius: 50%;
+}
+
+.lostContainer{
+    position: absolute;
+    right: 0;
+    margin-top: 141px;
+    display: none;
+}
+.txtOnly{
+    color: white;
+    margin-right: 80px;
+    font-size: x-large;
+    
+}
+.losePic {
+    margin-top: 70px;
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+    width: 400px;
+    height: 200px
+}
+.here {
+    cursor: pointer;
+    color: blue;
+    font-weight: bold;
+}
+.winContainer{
+    position: absolute;
+    right: 0;
+    margin-top: 178px;
+    display: none;
+}
+.txtOnlyWin{
+    right: 0;
+    color: white;
+    margin-right: 65px;
+    font-size: large;
+    
+}
+.winPic {
+    margin-top: 35px;
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+    width: 400px;
+    height: 200px
+}
+.hereWin {
+    cursor: pointer;
+    color: blue;
+    font-weight: bold;
+}
+.emoji{
+    cursor: pointer;
+}
 .cell {
     text-align: center;
     cursor: pointer;

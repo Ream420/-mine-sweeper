@@ -1,15 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="stylesheet" href="css/style.css">
     <title>Mine sweeper 💣</title>
+    <h1>💣Time to sweep mines💣| <span onclick="init(4)" class="emoji">😃</span></h1>
 </head>
-<body>
+
+<body onload="init(4)">
     <div class="time">Time</br>00:00:00</div>
+    <div class="level">
+        <span class="text">
+            Choose your level
+        </span>
+        <ul>
+            <li style="color: black; background-color: green;margin-top: -10px;" onclick="levelSelect(this)">Begginer
+            </li>
+            <li style="color: black; background-color: yellow;" onclick="levelSelect(this)">Medium</li>
+            <li style="color: black; background-color: red;" onclick="levelSelect(this)">Expert</li>
+        </ul>
+    </div>
+    <div class="lostContainer">
+        <div class="txtOnly">
+            Oh no! looks like your dead...👀 </br>
+            Click <span class="here" onclick="restart()">here</span>, or on the emoji on top,</br> to try again!
+        </div>
+        <img class="losePic" src="images/lose.jpg" alt="">
+    </div>
+    <div class="winContainer">
+        <div class="txtOnlyWin">
+            Well Well, look like you can be a bomb defuser! </br>
+            Click <span class="hereWin" onclick="restart()">here</span>, or on the emoji on top,</br> to defuse more
+            bombs!!!</br>
+            💣💣💣
+        </div>
+        <img class="winPic" src="images/victory.jpg" alt="">
+    </div>
     <table class="mainBoard"></table>
     <script src="js/util.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>
-
-

@@ -1,8 +1,9 @@
 'use strict';
-var x = 'util';
-console.log(x);
+// Connection Check.
+const utilCHECK = 'UTIL CONNECTION CHECK';
+console.log(utilCHECK);
+// Connection Check.
 
-//gMat creation function.
 function createMat(rows, cols) {
     var mat = [];
     var mineCount = 0;
@@ -26,11 +27,11 @@ function createMat(rows, cols) {
     }
     return mat;
 }
+
 function randNum(lim) {
     return Math.floor(Math.random() * lim);
 }
 
-//gCell creation function.
 function createCell() {
     var cell = {
         minesAroundCount: 0,
