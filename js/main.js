@@ -9,8 +9,8 @@ var gSec = 1;
 var timer;
 
 var gLevel = {
-    size: 4,
-    mines: 2 // number of mines in the fame 
+    size: 8,
+    mines: 8 // number of mines in the fame 
 }
 
 // Game stat(keep updating)
