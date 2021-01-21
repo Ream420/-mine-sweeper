@@ -2,7 +2,9 @@
 <html lang="en">
 
 <head>
+    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- Headlines -->
     <title>Mine sweeper 💣</title>
     <h1>💣Time to sweep mines💣| <span onclick="init(4)" class="emoji">😃</span></h1>
 </head>
@@ -22,6 +24,7 @@
         </ul>
     </div>
 
+    <!-- Loss stat -->
     <div class="lostContainer">
         <div class="txtOnly">
             Oh no! looks like your dead...👀 </br>
@@ -29,7 +32,8 @@
         </div>
         <img class="losePic" src="images/lose.jpg" alt="">
     </div>
-
+    
+    <!-- Win stat -->
     <div class="winContainer">
         <div class="txtOnlyWin">
             Well Well, look like you can be a bomb defuser! </br>
@@ -39,7 +43,10 @@
         </div>
         <img class="winPic" src="images/victory.jpg" alt="">
     </div>
+    
+    <!-- Main board -->
     <table class="mainBoard"></table>
+    <!-- JS Files -->
     <script src="js/util.js"></script>
     <script src="js/main.js"></script>
 </body>

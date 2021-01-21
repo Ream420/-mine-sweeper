@@ -19,7 +19,7 @@ var gBoard;
 var elEmoji;
 
 
-// Initialization function.
+// Initialization functions.
 function init(size) {
     gStartup = false;
     var mines;
@@ -62,6 +62,9 @@ function init(size) {
 
     elWinPic = document.querySelector('.winContainer');
     elWinPic.style.display = 'none';
+}
+function restart() {
+    init(gSize);
 }
 
 
@@ -155,7 +158,6 @@ function cellClicked(elCell, posi, posj, numOfMines) {
 }
 // Mouse right click.
 function rightClick(elCell, i, j, numOfMines) {
-    console.log('rightClick(elCell, i, j, numOfMines)');
 
     if (!gStartup) {
         timer = setInterval(timeCount, 900);
@@ -201,10 +203,9 @@ function rightClick(elCell, i, j, numOfMines) {
     }
 }
 
-
 function checkMine(currCell, elCell, posi, posj) {
     if (!gGame.isOn) return;
-    
+
     if (currCell.isMine) {
         clearInterval(timer);
 
@@ -217,7 +218,7 @@ function checkMine(currCell, elCell, posi, posj) {
                     elCellCurr.innerText = MINE;
                     continue;
                 }
-                
+
                 if (cell.isMine) {
 
                     //Model update
@@ -240,8 +241,8 @@ function checkMine(currCell, elCell, posi, posj) {
 
 // Victory situation.
 function isVictory() {
-    console.log('isVictory() function');
     if (!gGame.isOn) return;
+
     var size = gLevel.size;
     var cond1 = ((gGame.shownCount + gGame.markedCount) === (size * size));
     var cond2 = (gGame.markedCount === gLevel.mines);
@@ -254,17 +255,13 @@ function isVictory() {
 function itsALoss() {
     elLostPic = document.querySelector('.lostContainer');
     elLostPic.style.display = 'unset';
-    
+
     elEmoji = document.querySelector('.emoji');
     elEmoji.innerText = '🤯';
-    
+
     clearInterval(timer);
 }
 
-// Initialization function.
-function restart() {
-    init(gSize);
-}
 
 function levelSelect(elChoise) {
     if (elChoise.innerText === 'Begginer') gSize = 4;
