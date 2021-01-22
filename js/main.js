@@ -24,6 +24,7 @@ var elLostPic = document.querySelector('.lostContainer');
 // Initialization function.
 function init(size) {
     gClick = false;
+    gNumOfClicks = 0;
     var mines;
     switch (size) {
         case 4:
@@ -46,7 +47,7 @@ function init(size) {
         shownCount: 0,
         markedCount: 0,
         secsPassed: 0,
-        lives: 3
+        lifes: 2
     }
     gBoard = createMat(gLevel.size, gLevel.size);
     renderBoard(gBoard);
@@ -104,20 +105,32 @@ function setMinesNegsCount(board, cellPos) {
 
 // Mouse left click.
 function cellClicked(elCell, posi, posj, numOfMines) {
-    var currCell = gBoard[posi][posj];
-
-    gNumOfClicks++;
-    if ((gNumOfClicks === 1) && (currCell.isMine)) {
-        currCell.isMine = false;
-        gLevel.mines--;
-    }
-
     if (!gClick) {
         gClick = true;
         gGame.isOn = true;
         gTimer = setInterval(timeCount, 1000);
     }
     if (!gGame.isOn) return;
+    var currCell = gBoard[posi][posj];
+
+    gNumOfClicks++;
+    if ((gNumOfClicks === 1) && (currCell.isMine)) {
+        currCell.isMine = false;
+        var ranI = randNum(gBoard.length);
+        var ranJ = randNum(gBoard[0].length);
+        var newCellMine = gBoard[ranI][ranJ];
+
+        while (newCellMine.isMine && newCellMine.isShown) {
+            ranI = randNum(gBoard.length);
+            ranJ = randNum(gBoard[0].length);
+            newCellMine = gBoard[ranI][ranJ];
+        }
+
+        newCellMine.isMine = true;
+        console.log(gBoard);
+    }
+
+
 
     elLevelOpt.style.display = 'none';
 
@@ -129,18 +142,15 @@ function cellClicked(elCell, posi, posj, numOfMines) {
         gGame.shownCount++;
 
         //Dom update
+        innerText = numOfMines;
         if (currCell.isMine) {
             elCell.style.backgroundColor = 'red';
+            innerText = MINE;
         } else elCell.style.backgroundColor = 'rgb(90, 132, 146)';
-
-        innerText = numOfMines;
-        if (currCell.isMine) innerText = MINE;
         if (numOfMines === 0) innerText = '';
         elCell.innerText = innerText;
 
-        if ((currCell.minesAroundCount === 0) && !currCell.isMine) {
-            showCellsAround(posi, posj);
-        }
+        if ((currCell.minesAroundCount === 0) && !currCell.isMine) showCellsAround(posi, posj);
 
         if (checkMine(currCell, elCell, posi, posj)) return;
         if (isVictory()) {
@@ -192,42 +202,27 @@ function rightClick(elCell, i, j, numOfMines) {
     }
 }
 
-// Victory situation.
-function isVictory() {
-    // if (!gGame.isOn) return;
-
-    var size = gLevel.size;
-    var cond1 = ((gGame.shownCount + gGame.markedCount) === (size * size));
-    var cond2 = (gGame.markedCount === gLevel.mines);
-    if (cond1 && cond2) {
-        clearInterval(gTimer);
-        return true;
-    }
-}
-// Loss situation.
-function itsALoss() {
-    elLostPic.style.display = 'unset';
-    
-    elEmoji.innerText = '🤯';
-    clearInterval(gTimer);
-}
-
 function checkMine(currCell, elCell, posi, posj) {
     // if (!gGame.isOn) return;
 
-    if (currCell.isMine) {
-        clearInterval(gTimer);
+    // //TO CHECK
+    // if (currCell.isMine) return false;
 
+    if (!currCell.isMine) return false;
+
+    gGame.lifes--;
+    console.log(gGame.lifes);
+    elCell.style.backgroundColor = 'red';
+    elCell.innerText = MINE;
+
+    if (gGame.lifes === 0) {
+
+        clearInterval(gTimer);
         for (var i = 0; i < gBoard.length; i++) {
             for (var j = 0; j < gBoard[0].length; j++) {
-
                 var cell = gBoard[i][j];
-                if (i === posi && j === posj) {
-                    var elCellCurr = document.getElementById('' + i + j);
-                    elCellCurr.innerText = MINE;
-                    continue;
-                }
 
+                if (cell.isShown) continue;
                 if (cell.isMine) {
 
                     //Model update
@@ -245,17 +240,45 @@ function checkMine(currCell, elCell, posi, posj) {
         itsALoss();
         return true;
     }
-    return false;
 }
 
+// Victory situation.
+function isVictory() {
+    // if (!gGame.isOn) return;
+
+    var size = gLevel.size;
+    var cond1 = ((gGame.shownCount + gGame.markedCount) === (size * size));
+    var cond2 = (gGame.markedCount === gLevel.mines);
+    if (cond1 && cond2) {
+        clearInterval(gTimer);
+        return true;
+    }
+}
+// Loss situation.
+function itsALoss() {
+    elLostPic.style.display = 'unset';
+
+    elEmoji.innerText = '🤯';
+    clearInterval(gTimer);
+}
+
+
 function levelSelect(elChoise) {
+    var lifes = 2;
+
     if (elChoise.innerText === 'Begginer') gSize = 4;
-    if (elChoise.innerText === 'Medium') gSize = 8;
-    if (elChoise.innerText === 'Expert') gSize = 12;
+    if (elChoise.innerText === 'Medium') {
+        gSize = 8;
+        lifes = 3;
+    }
+    if (elChoise.innerText === 'Expert') {
+        gSize = 12;
+        lifes = 3;
+    }
+
     init(gSize);
-
+    gGame.lifes = lifes;
     elLevelOpt.style.display = 'none';
-
     return gSize;
 }
 

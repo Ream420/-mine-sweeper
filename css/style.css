@@ -38,6 +38,15 @@ table,th,td {
     width: 30px;
 }
 
+.lifes{
+    font-size: xx-large;
+    position: absolute;
+    text-align: center;
+    margin-left: 510px;
+    margin-top: 60px;
+    height: 40px;
+    width: 160px;
+}
 .time{
     background-color: black;
     text-align: center;
@@ -50,6 +59,7 @@ table,th,td {
     margin-left: 100px;
     border-radius: 30px;
 }
+
 
 /* Level choice. */
 .level {
