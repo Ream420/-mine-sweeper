@@ -107,10 +107,8 @@ ul,li{
     margin-top: 70px;
     margin-right: 10px;
 }
-.here {
-    color: blue;
-    cursor: pointer;
-    font-weight: bold;
+.losePic{
+    border-radius: 20%;
 }
 
 /* Win stat. */
@@ -135,10 +133,8 @@ ul,li{
     margin-top: 35px;
     margin-right: 10px;
 }
-.hereWin {
-    color: blue;
-    cursor: pointer;
-    font-weight: bold;
+.winPic{
+    border-radius: 20%;
 }
 
 

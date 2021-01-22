@@ -5,23 +5,25 @@ console.log(CHECK);
 // Connection Check.
 const MINE = '💣';
 
-var gStartup;
-var gNumOfClicks = 0;
+var gGame;
+var gClick;
+var gTimer;
+var gBoard;
+var gLevel;
 var gSec = 1;
 var gSize = 0;
-var levelOpt;
-var elLostPic;
-var elWinPic;
-var timer;
-var gLevel;
-var gGame;
-var gBoard;
-var elEmoji;
+var gNumOfClicks = 0;
+
+var elTime = document.querySelector('.time');
+var elEmoji = document.querySelector('.emoji');
+var elLevelOpt = document.querySelector('.level');
+var elWinPic = document.querySelector('.winContainer');
+var elLostPic = document.querySelector('.lostContainer');
 
 
-// Initialization functions.
+// Initialization function.
 function init(size) {
-    gStartup = false;
+    gClick = false;
     var mines;
     switch (size) {
         case 4:
@@ -40,31 +42,26 @@ function init(size) {
         mines: mines
     }
     gGame = {
-        isOn: true,
+        isOn: false,
         shownCount: 0,
         markedCount: 0,
-        secsPassed: 0
+        secsPassed: 0,
+        lives: 3
     }
     gBoard = createMat(gLevel.size, gLevel.size);
     renderBoard(gBoard);
     console.table(gBoard);
     console.log(gBoard);
 
+    //Time restart
+    clearInterval(gTimer);
+    elTime.innerHTML = 'Time</br>00:00:00';
+
     //CSS restart
-    elEmoji = document.querySelector('.emoji');
     elEmoji.innerText = '😃';
-
-    levelOpt = document.querySelector('.level');
-    levelOpt.style.display = 'unset';
-
-    elLostPic = document.querySelector('.lostContainer');
+    elLevelOpt.style.display = 'unset';
     elLostPic.style.display = 'none';
-
-    elWinPic = document.querySelector('.winContainer');
     elWinPic.style.display = 'none';
-}
-function restart() {
-    init(gSize);
 }
 
 
@@ -108,23 +105,21 @@ function setMinesNegsCount(board, cellPos) {
 // Mouse left click.
 function cellClicked(elCell, posi, posj, numOfMines) {
     var currCell = gBoard[posi][posj];
+
     gNumOfClicks++;
-
-
     if ((gNumOfClicks === 1) && (currCell.isMine)) {
         currCell.isMine = false;
         gLevel.mines--;
     }
 
-    if (!gStartup) {
-        timer = setInterval(timeCount, 900);
-        gStartup = true;
+    if (!gClick) {
+        gClick = true;
         gGame.isOn = true;
+        gTimer = setInterval(timeCount, 1000);
     }
-
     if (!gGame.isOn) return;
-    levelOpt = document.querySelector('.level');
-    levelOpt.style.display = 'none';
+
+    elLevelOpt.style.display = 'none';
 
     var innerText = null;
     if (!currCell.isMarked && !currCell.isShown) {
@@ -149,20 +144,20 @@ function cellClicked(elCell, posi, posj, numOfMines) {
 
         if (checkMine(currCell, elCell, posi, posj)) return;
         if (isVictory()) {
-            elWinPic = document.querySelector('.winContainer');
             elWinPic.style.display = 'unset';
-            elEmoji = document.querySelector('.emoji');
             elEmoji.innerText = '😎';
+
+            gGame.isOn = false;
         }
     }
 }
 // Mouse right click.
 function rightClick(elCell, i, j, numOfMines) {
 
-    if (!gStartup) {
-        timer = setInterval(timeCount, 900);
-        gStartup = true;
+    if (!gClick) {
+        gClick = true;
         gGame.isOn = true;
+        gTimer = setInterval(timeCount, 1000);
     }
     if (!gGame.isOn) return;
 
@@ -176,12 +171,6 @@ function rightClick(elCell, i, j, numOfMines) {
         //Dom update.
         numOfMines = '🚩';
         elCell.innerText = numOfMines;
-
-        if (!gStartup) {
-            var timer = setInterval(timeCount, 900);
-            gStartup = true;
-            gGame.isOn = true;
-        }
     }
 
     else if (currCell.isMarked && !currCell.isShown) {
@@ -196,18 +185,38 @@ function rightClick(elCell, i, j, numOfMines) {
     }
 
     if (isVictory()) {
-        elWinPic = document.querySelector('.winContainer');
         elWinPic.style.display = 'unset';
-        elEmoji = document.querySelector('.emoji');
         elEmoji.innerText = '😎';
+
+        gGame.isOn = false;
     }
 }
 
+// Victory situation.
+function isVictory() {
+    // if (!gGame.isOn) return;
+
+    var size = gLevel.size;
+    var cond1 = ((gGame.shownCount + gGame.markedCount) === (size * size));
+    var cond2 = (gGame.markedCount === gLevel.mines);
+    if (cond1 && cond2) {
+        clearInterval(gTimer);
+        return true;
+    }
+}
+// Loss situation.
+function itsALoss() {
+    elLostPic.style.display = 'unset';
+    
+    elEmoji.innerText = '🤯';
+    clearInterval(gTimer);
+}
+
 function checkMine(currCell, elCell, posi, posj) {
-    if (!gGame.isOn) return;
+    // if (!gGame.isOn) return;
 
     if (currCell.isMine) {
-        clearInterval(timer);
+        clearInterval(gTimer);
 
         for (var i = 0; i < gBoard.length; i++) {
             for (var j = 0; j < gBoard[0].length; j++) {
@@ -239,43 +248,19 @@ function checkMine(currCell, elCell, posi, posj) {
     return false;
 }
 
-// Victory situation.
-function isVictory() {
-    if (!gGame.isOn) return;
-
-    var size = gLevel.size;
-    var cond1 = ((gGame.shownCount + gGame.markedCount) === (size * size));
-    var cond2 = (gGame.markedCount === gLevel.mines);
-    if (cond1 && cond2) {
-        clearInterval(timer);
-        return true;
-    }
-}
-// Loss situation.
-function itsALoss() {
-    elLostPic = document.querySelector('.lostContainer');
-    elLostPic.style.display = 'unset';
-
-    elEmoji = document.querySelector('.emoji');
-    elEmoji.innerText = '🤯';
-
-    clearInterval(timer);
-}
-
-
 function levelSelect(elChoise) {
     if (elChoise.innerText === 'Begginer') gSize = 4;
     if (elChoise.innerText === 'Medium') gSize = 8;
     if (elChoise.innerText === 'Expert') gSize = 12;
-
     init(gSize);
 
-    levelOpt = document.querySelector('.level');
-    levelOpt.style.display = 'none';
+    elLevelOpt.style.display = 'none';
+
+    return gSize;
 }
 
 function showCellsAround(posi, posj) {
-    if (!gGame.isOn) return;
+    // if (!gGame.isOn) return;
 
     for (var i = posi - 1; i <= posi + 1; i++) {
         if (i < 0 || i > gBoard.length - 1) continue;
@@ -284,7 +269,7 @@ function showCellsAround(posi, posj) {
             if (i === posi && j === posj) continue;
 
             var cell = gBoard[i][j];
-            if (cell.isMine || cell.isShown) continue;
+            if (cell.isMine || cell.isShown || cell.isMarked) continue;
 
             //Model update.
             cell.isShown = true;
@@ -306,7 +291,6 @@ function timeCount() {
     gGame.secsPassed += 1;
 }
 function timeRender(seconds) {
-    var elTime = document.querySelector('.time');
     elTime.innerText = 'Time\n' + secondsToTime(seconds);
 }
 function secondsToTime(sec) {
