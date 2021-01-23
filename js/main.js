@@ -85,7 +85,7 @@ function renderBoard(board) {
             var cellClassName = `${i}${j}`;
             var cellPos = { i: i, j: j };
             var minesAround = setMinesNegsCount(board, cellPos);
-           
+
             cell.minesAroundCount = minesAround;
             strHTML += `<td class="cell ${cellClassName}" id="${i}${j}"
                 oncontextmenu="rightClick(this, ${i}, ${j});return false" 
@@ -106,7 +106,7 @@ function setMinesNegsCount(board, cellPos) {
         for (var j = cellPos.j - 1; j <= cellPos.j + 1; j++) {
             if (j < 0 || j > board[0].length - 1) continue;
             if (i === cellPos.i && j === cellPos.j) continue;
-          
+
             var currCell = board[i][j];
             if (currCell.isMine) counter++;
         }
@@ -121,7 +121,7 @@ function cellClicked(elCell, posi, posj, numOfMines) {
         gGame.isOn = true;
         gTimer = setInterval(timeCount, 1000);
     }
-  
+
     if (!gGame.isOn) return;
     var currCell = gBoard[posi][posj];
 
@@ -293,13 +293,15 @@ function levelSelect(elChoise) {
 }
 
 function showCellsAround(posi, posj) {
+    
     for (var i = posi - 1; i <= posi + 1; i++) {
         if (i < 0 || i > gBoard.length - 1) continue;
         for (var j = posj - 1; j <= posj + 1; j++) {
             if (j < 0 || j > gBoard[0].length - 1) continue;
             if (i === posi && j === posj) continue;
-
+            
             var cell = gBoard[i][j];
+            if (!cell.minesAroundCount === 0 || cell.isMine || cell.isShown) return;
             if (cell.isMine || cell.isShown || cell.isMarked) continue;
 
             //Model update.
@@ -313,6 +315,13 @@ function showCellsAround(posi, posj) {
             var innerText = cell.minesAroundCount;
             if (innerText === 0) innerText = '';
             elCell.innerText = innerText;
+
+            if (cell.minesAroundCount === 0) {
+                showCellsAround(posi + 1, posj + 1);
+                showCellsAround(posi - 1, posj - 1);
+                showCellsAround(posi + 1, posj - 1);
+                showCellsAround(posi - 1, posj + 1);
+            }
         }
     }
 }
