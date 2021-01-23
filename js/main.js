@@ -301,7 +301,6 @@ function showCellsAround(posi, posj) {
             if (i === posi && j === posj) continue;
             
             var cell = gBoard[i][j];
-            if (!cell.minesAroundCount === 0 || cell.isMine || cell.isShown) return;
             if (cell.isMine || cell.isShown || cell.isMarked) continue;
 
             //Model update.
@@ -315,13 +314,6 @@ function showCellsAround(posi, posj) {
             var innerText = cell.minesAroundCount;
             if (innerText === 0) innerText = '';
             elCell.innerText = innerText;
-
-            if (cell.minesAroundCount === 0) {
-                showCellsAround(posi + 1, posj + 1);
-                showCellsAround(posi - 1, posj - 1);
-                showCellsAround(posi + 1, posj - 1);
-                showCellsAround(posi - 1, posj + 1);
-            }
         }
     }
 }
